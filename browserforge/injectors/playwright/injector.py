@@ -12,6 +12,7 @@ async def AsyncNewContext(
     browser: AsyncBrowser,
     fingerprint: Optional[Fingerprint] = None,
     fingerprint_options: Optional[Dict] = None,
+    path:  Optional[str] = None,
     **context_options,
 ) -> AsyncBrowserContext:
     """
@@ -26,7 +27,7 @@ async def AsyncNewContext(
     fingerprint = _fingerprint(fingerprint, fingerprint_options)
     function = InjectFunction(fingerprint)
     # Build new context
-    context = await browser.new_context(**_context_options(fingerprint, context_options))
+    context = await browser.new_context(**_context_options(fingerprint, context_options), storage_state=path)
     # Set headers
     await context.set_extra_http_headers(
         only_injectable_headers(fingerprint.headers, browser.browser_type.name)
@@ -49,6 +50,7 @@ def NewContext(
     browser: Browser,
     fingerprint: Optional[Fingerprint] = None,
     fingerprint_options: Optional[Dict] = None,
+    path:  Optional[str] = None,
     **context_options,
 ) -> BrowserContext:
     """
@@ -63,7 +65,7 @@ def NewContext(
     fingerprint = _fingerprint(fingerprint, fingerprint_options)
     function = InjectFunction(fingerprint)
     # Build new context
-    context = browser.new_context(**_context_options(fingerprint, context_options))
+    context = browser.new_context(**_context_options(fingerprint, context_options), storage_state=path)
     # Set headers
     context.set_extra_http_headers(
         only_injectable_headers(fingerprint.headers, browser.browser_type.name)
